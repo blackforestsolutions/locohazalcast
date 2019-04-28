@@ -14,7 +14,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <docker-maven-plugin.version>0.4.13</docker-maven-plugin.version>
+        <docker-maven-plugin.version>1.2.0</docker-maven-plugin.version>
         <maven.assembly.plugin.version>3.1.1</maven.assembly.plugin.version>
         <hazelcast-client-version>3.12</hazelcast-client-version>
     </properties>

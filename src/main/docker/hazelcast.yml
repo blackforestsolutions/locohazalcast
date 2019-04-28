@@ -1,15 +1,5 @@
 version: '2'
 services:
-  # client app far jar image (client code and dependencies)
-  hazelcast-client:
-    image: locohazelcast
-    depends_on:
-        - hazelcast
-    volumes:
-        - ../resources:/configFolder
-    environment:
-        - JAVA_OPTS=-Dhazelcast.client.config=/configFolder/hazelcast-client.xml -Dhazelcast.member.address=hazelcast -Dgroup.name=hz-compose -Dgroup.password=s3crEt
-
   # hazelcast imdg
   hazelcast:
     image: hazelcast/hazelcast:latest
@@ -17,8 +7,8 @@ services:
         - ../resources:/configFolder
     environment:
         - JAVA_OPTS=-Dhazelcast.config=/configFolder/hazelcast.xml -Dhazelcast.mancenter.url=http://mancenter:8080/mancenter -Dgroup.name=hz-compose -Dgroup.password=s3crEt
-#        ports:
-#            - 5701:5701
+    ports:
+        - 5701:5701
     links:
         - "management-center:mancenter"
 
