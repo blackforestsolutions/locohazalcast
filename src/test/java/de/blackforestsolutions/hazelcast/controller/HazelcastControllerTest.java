@@ -1,9 +1,5 @@
 package de.blackforestsolutions.hazelcast.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.hazelcast.core.HazelcastInstance;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,10 +10,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = "logging.level.org.springframework.web=DEBUG")
 @AutoConfigureMockMvc
-public class PersonFormControllerTest {
+public class HazelcastControllerTest {
 
 
     @Autowired
@@ -60,7 +60,7 @@ public class PersonFormControllerTest {
     @Test
     public void readAllDataFromHazelcast_delivers_map_with_data() throws Exception {
         mockMvc.perform(get("/hazelcast/read-all-data"))
-                .andExpect(status().is(200));
+                .andExpect(status().isOk());
     }
 }
 
