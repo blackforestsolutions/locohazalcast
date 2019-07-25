@@ -13,7 +13,38 @@
         <version>2.0.0.RELEASE</version>
     </parent>
 
+    <properties>
+        <!--Productive dependencies-->
+        <java.version>1.8</java.version>
+        <hazelcast.version>3.12.1</hazelcast.version>
+        <!--Testing dependencies-->
+        <assertJ.verion>3.9.0</assertJ.verion>
+        <!--Build Plugins-->
+        <maven.findbugs.plugin.version>3.0.4</maven.findbugs.plugin.version>
+        <maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
+        <jacoco-maven.plugin.version>0.8.4</jacoco-maven.plugin.version>
+        <dockerfile.maven.plugin.version>1.4.10</dockerfile.maven.plugin.version>
+    </properties>
+
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast</artifactId>
+            <version>${hazelcast.version}</version>
+        </dependency>
+
+        <!--Testing Dependencies -->
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast</artifactId>
+            <scope>test</scope>
+            <version>${hazelcast.version}</version>
+            <classifier>tests</classifier>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -22,7 +53,6 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.9.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -40,33 +70,7 @@
             <artifactId>htmlunit-driver</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast</artifactId>
-            <version>3.12</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast</artifactId>
-            <version>3.12</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast-client</artifactId>
-            <version>3.12</version>
-        </dependency>
     </dependencies>
-
-    <properties>
-        <java.version>1.8</java.version>
-        <maven.findbugs.plugin.version>3.0.4</maven.findbugs.plugin.version>
-        <maven.checkstyle.plugin.version>2.17</maven.checkstyle.plugin.version>
-    </properties>
-
 
     <build>
         <!-- Build Process with check of : 1. Code Quality, Testing and bugs -->
@@ -91,6 +95,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- 2. Make static Code Analysis with find Bugs -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
@@ -122,16 +127,57 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- 2. Unit Tests  start -->
+            <!-- 3. Unit Tests  start -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <!-- 4. Execute Test Coverage analysis with jacoco to assure quality expactations are met -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <!-- configuration exclude -->
+                                <exclude>de/blackforestsolutions/hazelcast/config/*</exclude>
+                                <exclude>de/blackforestsolutions/hazelcast/model/*</exclude>
+                                <exclude>**/*de/blackforestsolutions/hazelcast/Application.class</exclude>
+                            </excludes>
+                            <rules>
+                                <rule>
+                                    <element>CLASS</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.80</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
+            <!-- Put Everything in docker container -->
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
-                <version>1.3.6</version>
+                <version>${dockerfile.maven.plugin.version}</version>
                 <configuration>
                     <repository>${project.artifactId}</repository>
                     <buildArgs>
@@ -147,7 +193,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 
