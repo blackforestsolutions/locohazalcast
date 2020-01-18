@@ -1,4 +1,4 @@
-package de.blackforestsolutions.hazelcast.service.objectmothers;
+package de.blackforestsolutions.hazelcast.objectmothers;
 
 import de.blackforestsolutions.datamodel.*;
 import org.springframework.data.geo.Distance;

@@ -1,4 +1,4 @@
-package de.blackforestsolutions.hazelcast.config;
+package de.blackforestsolutions.hazelcast.configuration;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.config.EvictionPolicy;
@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class HazelcastConfiguration {
 
-    private static final int HAZELCASTSIZE = 200;
-    private static final int HAZELCASTMANAGEMENTCENTERUPDATEINTERVAL = 3;
+    private static final int HAZELCAST_SIZE = 200;
+    private static final int TIME_TO_LIVE_IN_SECONDS = -1;
 
     @Bean
     public Config hazelCastConfig() {
@@ -20,9 +20,9 @@ public class HazelcastConfiguration {
                 .addMapConfig(
                         new MapConfig()
                                 .setName("configuration")
-                                .setMaxSizeConfig(new MaxSizeConfig(HAZELCASTSIZE, MaxSizeConfig.MaxSizePolicy.FREE_HEAP_SIZE))
+                                .setMaxSizeConfig(new MaxSizeConfig(HAZELCAST_SIZE, MaxSizeConfig.MaxSizePolicy.FREE_HEAP_SIZE))
                                 .setEvictionPolicy(EvictionPolicy.LRU)
-                                .setTimeToLiveSeconds(-1));
+                                .setTimeToLiveSeconds(TIME_TO_LIVE_IN_SECONDS));
         return config;
     }
 

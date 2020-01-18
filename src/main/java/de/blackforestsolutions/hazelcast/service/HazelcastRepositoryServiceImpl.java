@@ -16,17 +16,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static de.blackforestsolutions.hazelcast.config.ConfigurationUtils.HAZELCAST_INSTANCE;
-import static de.blackforestsolutions.hazelcast.config.ConfigurationUtils.JOURNEY_MAP;
+import static de.blackforestsolutions.hazelcast.configuration.ConfigurationUtils.HAZELCAST_INSTANCE;
+import static de.blackforestsolutions.hazelcast.configuration.ConfigurationUtils.JOURNEY_MAP;
 
 @Service
 public class HazelcastRepositoryServiceImpl implements HazelcastRepositoryService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HazelcastController.class);
 
-    private Map<String, Journey> hazelcastMap;
+    private final Map<String, Journey> hazelcastMap;
 
-    private LocoJsonMapper locoJsonMapper;
+    private final LocoJsonMapper locoJsonMapper;
 
     @Autowired
     public HazelcastRepositoryServiceImpl(@Qualifier(HAZELCAST_INSTANCE) HazelcastInstance hazelcastInstance) {
@@ -35,19 +35,16 @@ public class HazelcastRepositoryServiceImpl implements HazelcastRepositoryServic
         this.locoJsonMapper = new LocoJsonMapper();
     }
 
-    public HazelcastRepositoryServiceImpl setLocoJsonMapper(LocoJsonMapper locoJsonMapper) {
-        this.locoJsonMapper = locoJsonMapper;
-        return this;
-    }
-
     @Override
-    public void writeDataToHazelcast(String key, String value) {
+    public boolean isWriteDataToHazelcastSuccessfullyWith(String key, String value) {
         try {
             hazelcastMap.put(key, locoJsonMapper.mapJsonToJourney(value));
         } catch (IOException e) {
-            LOGGER.error("Error during mapping: {}", e);
+            LOGGER.error("Error during mapping: ", e);
+            return false;
         }
         LOGGER.debug("Value was store in cache: {}", value);
+        return true;
     }
 
     @Override
@@ -63,16 +60,16 @@ public class HazelcastRepositoryServiceImpl implements HazelcastRepositoryServic
         try {
             requestedValue = locoJsonMapper.map(hazelcastMap.get(key));
         } catch (JsonProcessingException e) {
-            LOGGER.error("Error during mapping: {}", e);
+            LOGGER.error("Error during mapping: ", e);
         }
-        LOGGER.debug("Value was retreived from cache: {}", requestedValue);
+        LOGGER.debug("Value was retrieved from cache: {}", requestedValue);
         return requestedValue;
     }
 
     @Override
     public Map<String, String> readAllDataFromHazelcast() {
         Map<String, String> allEntriesMap = transformedFrom(hazelcastMap);
-        LOGGER.debug("All values retreived from cache: {}", allEntriesMap);
+        LOGGER.debug("All values retrieved from cache: {}", allEntriesMap);
         return allEntriesMap;
     }
 
@@ -82,7 +79,7 @@ public class HazelcastRepositoryServiceImpl implements HazelcastRepositoryServic
             try {
                 transformedMap.put(entry.getKey(), locoJsonMapper.map(entry.getValue()));
             } catch (JsonProcessingException e) {
-                LOGGER.error("Error during mapping: {}", e);
+                LOGGER.error("Error during mapping: ", e);
             }
         }
         return transformedMap;

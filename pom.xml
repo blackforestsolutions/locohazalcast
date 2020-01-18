@@ -137,14 +137,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
             <!-- 1. Check all files in src if they met the code Conventions -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -212,13 +204,8 @@
                         <configuration>
                             <excludes>
                                 <!-- configuration exclude -->
-                                <exclude>de/blackforestsolutions/crawler/configuration/*</exclude>
-                                <exclude>de/blackforestsolutions/crawler/model/*</exclude>
-                                <exclude>de/blackforestsolutions/crawler/model/lufthansa/*</exclude>
-                                <exclude>de/blackforestsolutions/crawler/model/bahn/*</exclude>
-                                <exclude>de/blackforestsolutions/crawler/model/rmv/*</exclude>
-                                <exclude>de/blackforestsolutions/crawler/model/rmv/hafas_rest/*</exclude>
-                                <exclude>**/*de/blackforestsolutions/crawler/Application.class</exclude>
+                                <exclude>de/blackforestsolutions/hazelcast/configuration/*</exclude>
+                                <exclude>**/*de/blackforestsolutions/hazelcast/Application.class</exclude>
                             </excludes>
                             <rules>
                                 <rule>

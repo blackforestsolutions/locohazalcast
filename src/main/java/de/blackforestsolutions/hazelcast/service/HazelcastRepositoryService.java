@@ -4,7 +4,7 @@ import java.util.Map;
 
 public interface HazelcastRepositoryService {
 
-    void writeDataToHazelcast(String key, String value);
+    boolean isWriteDataToHazelcastSuccessfullyWith(String key, String value);
 
     void deleteDataToHazelcast(String key);
 
