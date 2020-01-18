@@ -1,66 +1,69 @@
 package de.blackforestsolutions.hazelcast.controller;
 
-import com.hazelcast.core.HazelcastInstance;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
+import de.blackforestsolutions.hazelcast.service.HazelcastRepositoryService;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.util.Collections;
+import java.util.Map;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(properties = "logging.level.org.springframework.web=DEBUG")
-@AutoConfigureMockMvc
+import static de.blackforestsolutions.hazelcast.configuration.ConfigurationUtils.CONTROLLER_FAILURE_MESSAGE;
+import static de.blackforestsolutions.hazelcast.configuration.ConfigurationUtils.CONTROLLER_SUCCESS_MESSAGE;
+import static org.mockito.Mockito.*;
+
 public class HazelcastControllerTest {
 
+    private final HazelcastRepositoryService hazelcastRepositoryServiceMock = mock(HazelcastRepositoryService.class);
 
-    @Autowired
-    private MockMvc mockMvc;
-    @Qualifier("hazelcastInstance")
-    @Autowired
-    HazelcastInstance hazelcastInstance;
+    private final HazelcastController classUnderTest = new HazelcastController(hazelcastRepositoryServiceMock);
 
     @Test
-    public void writeDataToHazelcast_with_key_and_value_is_stored_and_returns_succes_string() throws Exception {
-        mockMvc.perform(post("/hazelcast/write-data?key=matthias&value=burkert"))
-                .andExpect(status().isOk());
+    public void test_writeDataToHazelcast_is_successful_returns_CONTROLLER_SUCCESS_MESSAGE() {
+        String testKey = "testKey";
+        String testValue = "testKey";
+        when(hazelcastRepositoryServiceMock.isWriteDataToHazelcastSuccessfullyWith(testKey, testValue)).thenReturn(true);
+
+        String result = classUnderTest.writeDataToHazelcast(testKey, testValue);
+
+        Assertions.assertThat(result).isEqualTo(CONTROLLER_SUCCESS_MESSAGE);
+        verify(hazelcastRepositoryServiceMock, Mockito.times(1)).isWriteDataToHazelcastSuccessfullyWith(testKey, testValue);
     }
 
     @Test
-    public void writeDataToHazelcast_with_key_but_not_value_is_stored_and_returns_400() throws Exception {
-        mockMvc.perform(post("/hazelcast/write-data?key=matthias"))
-                .andExpect(status().is(400));
+    public void test_writeDataToHazelcast_is_unSuccessful_returns_CONTROLLER_FAILURE_MESSAGE() {
+        String testKey = "testKey";
+        String testValue = "testKey";
+        when(hazelcastRepositoryServiceMock.isWriteDataToHazelcastSuccessfullyWith(testKey, testValue)).thenReturn(false);
+
+        String result = classUnderTest.writeDataToHazelcast(testKey, testValue);
+
+        Assertions.assertThat(result).isEqualTo(CONTROLLER_FAILURE_MESSAGE);
+        verify(hazelcastRepositoryServiceMock, Mockito.times(1)).isWriteDataToHazelcastSuccessfullyWith(testKey, testValue);
+    }
+
+
+    @Test
+    public void test_readDataFromHazelcast_is_successful_returns_String() {
+        String testKey = "testKey";
+        String response = "testPositive";
+        when(hazelcastRepositoryServiceMock.readDataFromHazelcast(testKey)).thenReturn(response);
+
+        String result = classUnderTest.readDataFromHazelcast(testKey);
+
+        Assertions.assertThat(result).isEqualTo(response);
+        verify(hazelcastRepositoryServiceMock, Mockito.times(1)).readDataFromHazelcast(testKey);
     }
 
     @Test
-    public void writeDataToHazelcast_with_no_key_but_value_is_stored_and_returns_400() throws Exception {
-        mockMvc.perform(post("/hazelcast/write-data?value=burkert"))
-                .andExpect(status().is(400));
-    }
+    public void test_readAllDataFromHazelcast_is_successful_returns_Map() {
+        Map<String, String> testStub = Collections.singletonMap("key", "value");
 
-    @Test
-    public void readDataFromHazelcast_with_key_returns_message() throws Exception {
-        mockMvc.perform(post("/hazelcast/write-data?key=matthias&value=burkert"));
-        mockMvc.perform(get("/hazelcast/read-data?key=matthias"))
-                .andExpect(status().isOk());
-    }
+        when(hazelcastRepositoryServiceMock.readAllDataFromHazelcast()).thenReturn(testStub);
 
-    @Test
-    public void readDataFromHazelcast_with_key_but_not_value_is_stored_and_returns_400() throws Exception {
-        mockMvc.perform(get("/hazelcast/read-data"))
-                .andExpect(status().is(400));
-    }
+        Map<String, String> result = classUnderTest.readAllDataFromHazelcast();
 
-    @Test
-    public void readAllDataFromHazelcast_delivers_map_with_data() throws Exception {
-        mockMvc.perform(get("/hazelcast/read-all-data"))
-                .andExpect(status().isOk());
+        Assertions.assertThat(result).isEqualTo(testStub);
+        verify(hazelcastRepositoryServiceMock, Mockito.times(1)).readAllDataFromHazelcast();
     }
 }
-

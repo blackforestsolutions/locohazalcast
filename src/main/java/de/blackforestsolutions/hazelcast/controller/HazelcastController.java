@@ -7,13 +7,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.Objects;
 
-import static de.blackforestsolutions.hazelcast.config.ConfigurationUtils.CONTROLLER_SUCCESS_MESSAGE;
+import static de.blackforestsolutions.hazelcast.configuration.ConfigurationUtils.CONTROLLER_FAILURE_MESSAGE;
+import static de.blackforestsolutions.hazelcast.configuration.ConfigurationUtils.CONTROLLER_SUCCESS_MESSAGE;
 
 @RestController
 @RequestMapping("/hazelcast")
 public class HazelcastController {
 
-    private HazelcastRepositoryService hazelcastRepository;
+    private final HazelcastRepositoryService hazelcastRepository;
 
     @Autowired
     public HazelcastController(HazelcastRepositoryService hazelcastRepository) {
@@ -23,8 +24,11 @@ public class HazelcastController {
 
     @PostMapping(value = "/write-data")
     public String writeDataToHazelcast(@RequestParam String key, @RequestParam String value) {
-        hazelcastRepository.writeDataToHazelcast(key, value);
-        return CONTROLLER_SUCCESS_MESSAGE;
+        boolean result = hazelcastRepository.isWriteDataToHazelcastSuccessfullyWith(key, value);
+        if (result) {
+            return CONTROLLER_SUCCESS_MESSAGE;
+        }
+        return CONTROLLER_FAILURE_MESSAGE;
     }
 
     @GetMapping(value = "/read-data")
