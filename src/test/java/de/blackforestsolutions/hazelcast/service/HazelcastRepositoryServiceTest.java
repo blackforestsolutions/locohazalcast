@@ -23,6 +23,17 @@ public class HazelcastRepositoryServiceTest {
 
     private final LocoJsonMapper locoJsonMapper = new LocoJsonMapper();
 
+
+    @Test
+    public void test_isWriteDataToHazelcastSuccessfullyWith_provoke_exception_returns_false() {
+        String testValue = "wrongValue";
+        String testKey = "wrongKey";
+
+        boolean result = classUnderTest.isWriteDataToHazelcastSuccessfullyWith(testKey, testValue);
+
+        assertThat(result).isFalse();
+    }
+
     @Test
     public void test_writeDataToHazelcast_add_one_entry_to_map_and_read_this_entry() throws IOException {
         String testValue = locoJsonMapper.map(testJourney);

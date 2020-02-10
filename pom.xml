@@ -225,10 +225,13 @@
                         <configuration>
                             <excludes>
                                 <!-- configuration exclude -->
-                                <exclude>de/blackforestsolutions/crawler/configuration/*</exclude>
-                                <exclude>**/*de/blackforestsolutions/crawler/Application.class</exclude>
-                                <exclude>de/blackforestsolutions/crawler/service/mapper/MapperService.class</exclude>
-                                <exclude>de/blackforestsolutions/crawler/util/TimeUtil.class</exclude>
+                                <exclude>de/blackforestsolutions/hazelcast/configuration/*</exclude>
+                                <exclude>**/*de/blackforestsolutions/hazelcast/configuration/ConfigurationUtils.class
+                                </exclude>
+                                <exclude>
+                                    **/*de/blackforestsolutions/hazelcast/configuration/HazelcastConfiguration.class
+                                </exclude>
+                                <exclude>**/*de/blackforestsolutions/hazelcast/Application.class</exclude>
                             </excludes>
                             <rules>
                                 <rule>
@@ -237,7 +240,7 @@
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.00</minimum>
+                                            <minimum>0.80</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
@@ -297,5 +300,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
