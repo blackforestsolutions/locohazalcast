@@ -50,7 +50,7 @@
             <Package name="~de[.]blackforestsolutions[.]crawler[.]model[.]bahn([.].*)?"/>
             <Package name="~de[.]blackforestsolutions[.]crawler[.]model[.]lufthansa([.].*)?"/>
             <Package name="~de[.]blackforestsolutions[.]crawler[.]model[.]rmv([.].*)?"/>
-            <Class name="de.blackforestsolutions.crawler.service.supportservice.HttpCallBuilder"/>
+            <Class name="de.blackforestsolutions.apiservice.service.supportservice.HttpCallBuilder"/>
         </Or>
     </Match>
     <!-- skip FindBugs analysis in examples -->
