@@ -1,0 +1,22 @@
+{
+  "city": "Berlin",
+  "country": "_DEU",
+  "postalCode": "",
+  "stateOrProvince": "",
+  "street": "",
+  "streetNumber": "",
+  "gpsCoordinates": {
+    "latitude": 1.0,
+    "longitude": 0.0
+  },
+  "dbStationId": "",
+  "dbStationName": "",
+  "airportId": "TXL",
+  "airportName": "Berlin Tegel",
+  "platform": "",
+  "terminal": "",
+  "departureTime": 1,
+  "arrivalTime": 1,
+  "stationName": "",
+  "stationId": ""
+}
